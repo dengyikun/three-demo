@@ -85,7 +85,7 @@ for (var i = 0, len = geometry.faces.length; i < len; i++) {
 
 var cylinder = new Mesh( geometry, meshFaceMaterial );
 
-cylinder.position.set( -2.6, -9, 0 )
+cylinder.position.set( -2.6, -4, 0 )
 
 scene.add( cylinder );
 
@@ -109,7 +109,7 @@ function onMoveStart() {
 function onMove(event) {
   var clientX = event.touches ? event.touches[0].clientX : event.clientX
   if (startX !== null) {
-    var x = (clientX - startX) * 0.002
+    var x = (clientX - startX) * 0.004
     geometry.rotateY(x)
   }
   startX = clientX
@@ -128,7 +128,7 @@ document.addEventListener( 'touchmove', onMove, false );
 document.addEventListener( 'touchend', onMoveEnd, false );
 
 function onScroll() {
-  cylinder.position.set( -2.6, -9 + window.scrollY * 0.02, 0 )
+  // cylinder.position.set( -2.6, -9 + window.scrollY * 0.02, 0 )
 }
 
 window.addEventListener( 'scroll', onScroll, false );
