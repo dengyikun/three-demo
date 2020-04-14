@@ -1,7 +1,8 @@
 body {
-    height: 200vh;
+    height: 250vh;
     margin: 0;
 }
+
 canvas {
     display: block;
     position: fixed;
