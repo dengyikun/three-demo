@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyboard</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background: #111111;
+            position: relative;
+        }
+
+        #dark, #light {
+            width: 660px;
+            position: absolute;
+            left: 50%;
+            top: 150px;
+            transform: translateX(-50%);
+            transition: height 0.7s ease-in-out;
+        }
+
+        #dark {
+            height: 250px;
+            z-index: 1;
+            background: url("./img/keyboard.png") top / 100% auto;
+            animation: dark-down 2s linear;
+        }
+
+        #light {
+            height: 500px;
+            filter: invert(100%);
+            z-index: 0;
+            background: url("./img/keyboard.png") bottom / 100% auto;
+            animation: light-down 2s linear;
+        }
+
+        @keyframes dark-down {
+            0% {
+                top: -600px;
+                height: 500px;
+            }
+
+            66.66% {
+                height: 500px;
+            }
+
+            100% {
+                top: 150px;
+                height: 250px;
+            }
+        }
+
+        @keyframes light-down {
+            0% {
+                top: -600px;
+            }
+
+            100% {
+                top: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="dark"></div>
+<div id="light"></div>
+<script>
+    setTimeout(function () {
+        const dark = document.getElementById('dark')
+        const light = document.getElementById('light')
+
+        const darkEvent = function () {
+            dark.style.height = dark.offsetHeight < 500 ? '500px' : '250px';
+        }
+
+        const lightEvent = function () {
+            dark.style.height = dark.offsetHeight > 0 ? '0px' : '250px';
+        }
+
+        dark.addEventListener('click', darkEvent);
+        dark.addEventListener('touch', darkEvent);
+        dark.addEventListener('mouseover', darkEvent);
+        dark.addEventListener('mouseleave', darkEvent);
+
+        light.addEventListener('click', lightEvent);
+        light.addEventListener('touch', lightEvent);
+        light.addEventListener('mouseover', lightEvent);
+        light.addEventListener('mouseleave', lightEvent);
+    }, 2000)
+</script>
+</body>
+</html>
