@@ -1,0 +1,118 @@
+<html>
+<head>
+    <title>Canvas</title>
+    <style>
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    var image = new Image();
+    image.src = "http://i.stack.imgur.com/jNAXA.jpg";
+    var iw, ih;
+
+    var easeInOut = function (x, pow) {
+        x = x < 0 ? 0 : x > 1 ? 1 : x; // clamp x
+        var xx = Math.pow(x, pow);
+        return xx / (xx + Math.pow(1 - x, pow));
+    }
+
+    function display() {  // put code in here
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+        ctx.globalAlpha = 1;           // reset alpha
+        ctx.clearRect(0, 0, w, h);
+        if (image.complete) {
+            if (ih === undefined) {
+                ih = image.height;
+                iw = image.width;
+            }
+            var step = 1 / canvas.height;
+            ;
+            var istep = ih / canvas.height;
+            var rstep = 0;
+            var y = 0;
+            var yh = 0;
+            var cH = canvas.height;
+            var cH = canvas.height;
+            var curve = Math.sin(globalTime / 1020) + 1.2;
+            var curve2 = Math.sin(globalTime / 2217) + 1.4;
+            var curve3 = Math.sin(globalTime / 533) * Math.PI;
+            var curve4 = (Math.sin(globalTime / 731) + 1.1) * Math.PI;
+            var wave = 4 / (Math.PI * 1);
+            var wave1 = curve4 / (Math.PI * 1);
+            for (var i = 0; i < 1; i += step) {
+                var wob = Math.sin(i * wave);
+                var wide = (Math.sin(i * wave1 * 3 + curve3) + 1.0) * 100;
+                y = easeInOut(easeInOut(wob, curve), curve2);
+                yh = easeInOut(easeInOut(wob + step, curve), curve2) - y;
+                y *= ih;
+                yh *= ih;
+                ctx.drawImage(image, wide, y, iw - wide * 2, yh, 0, i * cH, canvas.width, step * cH);
+            }
+
+        }
+    }
+
+
+    function update(timer) { // Main update loop
+        globalTime = timer;
+        display();  // call demo code
+        requestAnimationFrame(update);
+    }
+
+
+    const RESIZE_DEBOUNCE_TIME = 100;
+    var w, h, cw, ch, canvas, ctx, createCanvas, resizeCanvas, setGlobals, globalTime = 0, resizeCount = 0;
+    createCanvas = function () {
+        var c, cs;
+        cs = (c = document.createElement("canvas")).style;
+        cs.position = "absolute";
+        cs.top = cs.left = "0px";
+        cs.zIndex = 1000;
+        document.body.appendChild(c);
+        return c;
+
+    }
+    resizeCanvas = function () {
+        if (canvas === undefined) {
+            canvas = createCanvas();
+
+        }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx = canvas.getContext("2d");
+        if (typeof setGlobals === "function") {
+            setGlobals();
+        }
+        if (typeof onResize === "function") {
+            resizeCount += 1;
+            setTimeout(debounceResize, RESIZE_DEBOUNCE_TIME);
+
+        }
+    }
+
+    function debounceResize() {
+        resizeCount -= 1;
+        if (resizeCount <= 0) {
+            onResize();
+        }
+    }
+
+    setGlobals = function () {
+        cw = (w = canvas.width) / 2;
+        ch = (h = canvas.height) / 2;
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    requestAnimationFrame(update);
+</script>
+</body>
+</html>
