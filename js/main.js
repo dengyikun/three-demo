@@ -97,7 +97,7 @@ const cylinder = new Mesh(geometry, meshFaceMaterial);
 scene.add(cylinder);
 
 // 延 Y 轴的旋转角度
-let rotateY = 0
+let rotateY = 0;
 
 // 渲染
 const render = function () {
@@ -126,6 +126,7 @@ function onMove(event) {
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
     if (startX !== null) {
         rotateY += (clientX - startX) * 0.004;
+        console.log(rotateY % (Math.PI * 2) / (Math.PI * 2) * 360)
     }
     startX = clientX;
 }

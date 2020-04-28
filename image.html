@@ -1,118 +1,141 @@
 <html>
 <head>
-    <title>Canvas</title>
-    <style>
-        html {
-            overflow: hidden;
-        }
+  <title>Canvas</title>
+  <style>
+    html {
+      overflow: hidden;
+      background: #000000;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #canvas {
+      margin: 100px auto;
+      display: block;
+      background: #000000;
+    }
+  </style>
 </head>
 <body>
+<canvas id="canvas">
+</canvas>
 <script>
-    var image = new Image();
-    image.src = "http://i.stack.imgur.com/jNAXA.jpg";
-    var iw, ih;
+  const showWidth = 300; // 图片展示的宽度
+  const showHeight = 400; // 图片展示的高度
+  const canvasWidth = showWidth; // 画布宽度
+  const canvasHeight = showHeight + 100; // 画布高度，留出动画空间
+  const canvas = document.getElementById('canvas');
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
-    var easeInOut = function (x, pow) {
-        x = x < 0 ? 0 : x > 1 ? 1 : x; // clamp x
-        var xx = Math.pow(x, pow);
-        return xx / (xx + Math.pow(1 - x, pow));
+  const canvasContext = canvas.getContext('2d');
+
+  let imageWidth; // 图片实际的宽度
+  let imageHeight; // 图片实际的高度
+  const imageRed = new Image();
+  imageRed.src = './img/sample_red.jpg';
+  const imageGreen = new Image();
+  imageGreen.src = './img/sample_green.jpg';
+
+  // const easeInOut = function (x, pow) {
+  //     x = x < 0 ? 0 : x > 1 ? 1 : x; // clamp x
+  //     const xx = Math.pow(x, pow);
+  //     return xx / (xx + Math.pow(1 - x, pow));
+  // };
+
+  let globalTime = 0;
+  let step = 0;
+  let x = 0;
+  let r = 0;
+  let imageNow = imageRed;
+  let imageReplace = imageGreen;
+
+  function display() {  // put code in here
+    canvasContext.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+    canvasContext.globalAlpha = 1;           // reset alpha
+    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
+    if (imageGreen.complete) {
+      if (imageWidth === undefined) {
+        imageWidth = imageGreen.width;
+        imageHeight = imageGreen.height;
+      }
+      // const step = 1 / 300;
+      // var y = 0;
+      // var yh = 0;
+      // var cH = canvas.height;
+      // var curve = Math.sin(globalTime / 1020) + 1.2;
+      // var curve2 = Math.sin(globalTime / 2217) + 1.4;
+      // var curve3 = Math.sin(globalTime / 533) * Math.PI;
+      // var curve4 = (Math.sin(globalTime / 731) + 1.1) * Math.PI;
+      // var wave = 4 / (Math.PI * 1);
+      // var wave1 = curve4 / (Math.PI * 1);
+      // for (let i = 0; i < 1; i += step) {
+      //     var wob = Math.sin(i * wave);
+      //     var wide = (Math.sin(i * wave1 * 3 + curve3) + 1.0) * 100;
+      //     y = easeInOut(easeInOut(wob, curve), curve2);
+      //     yh = easeInOut(easeInOut(wob + step, curve), curve2) - y;
+      //     y *= ih;
+      //     yh *= ih;
+      //     canvasContext.drawImage(image, wide, y, iw - wide * 2, yh, 0, i * cH, canvas.width, step * cH);
+      // }
+
+      if (step > 0) {
+        x += 0.2;
+        r = step / 60;
+        canvas.style.filter = `blur(${(step - 40) / 20 * 10}px)`;
+        step--;
+      } else {
+        imageNow = imageReplace
+      }
+
+      const picNum = showWidth; // 分段数
+      let   sx = imageWidth; // 原图开始剪切的 x 坐标位置
+      const sy = 0; // 原图开始剪切的 y 坐标位置
+      let   sw = imageWidth / picNum; // 原图剪切宽度
+      let   sh = imageHeight; // 原图剪切高度
+      let   dx = showWidth; // 在画布上开始绘制图像的 x 坐标位置
+      let   dy = 50; // 在画布上开始绘制图像的 y 坐标位置
+      const dw = showWidth / picNum; // 在画布上绘制图像的宽度
+      let   dh = showHeight; // 在画布上绘制图像的高度
+
+      for (let i = 0; i < picNum; i++) {
+        const y = Math.sin(i / picNum * Math.PI * 2 - x) * r * -25; // 波浪高度
+        dy = 50 + y; // 上部分波浪
+        dh = showHeight - 2 * y; // 上下波浪同步
+        sw = sw * (1 - i / picNum / 50 * r)
+        sh = sh * (1 - i / picNum / 100 * r)
+        sx -= sw; // 从左往右开始剪切
+        dx -= dw; // 从左往右开始绘制
+        const image = i / picNum > (60 - step) / 15 ? imageNow : imageReplace
+        canvasContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
     }
-
-    function display() {  // put code in here
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
-        ctx.globalAlpha = 1;           // reset alpha
-        ctx.clearRect(0, 0, w, h);
-        if (image.complete) {
-            if (ih === undefined) {
-                ih = image.height;
-                iw = image.width;
-            }
-            var step = 1 / canvas.height;
-            ;
-            var istep = ih / canvas.height;
-            var rstep = 0;
-            var y = 0;
-            var yh = 0;
-            var cH = canvas.height;
-            var cH = canvas.height;
-            var curve = Math.sin(globalTime / 1020) + 1.2;
-            var curve2 = Math.sin(globalTime / 2217) + 1.4;
-            var curve3 = Math.sin(globalTime / 533) * Math.PI;
-            var curve4 = (Math.sin(globalTime / 731) + 1.1) * Math.PI;
-            var wave = 4 / (Math.PI * 1);
-            var wave1 = curve4 / (Math.PI * 1);
-            for (var i = 0; i < 1; i += step) {
-                var wob = Math.sin(i * wave);
-                var wide = (Math.sin(i * wave1 * 3 + curve3) + 1.0) * 100;
-                y = easeInOut(easeInOut(wob, curve), curve2);
-                yh = easeInOut(easeInOut(wob + step, curve), curve2) - y;
-                y *= ih;
-                yh *= ih;
-                ctx.drawImage(image, wide, y, iw - wide * 2, yh, 0, i * cH, canvas.width, step * cH);
-            }
-
-        }
-    }
+  }
 
 
-    function update(timer) { // Main update loop
-        globalTime = timer;
-        display();  // call demo code
-        requestAnimationFrame(update);
-    }
-
-
-    const RESIZE_DEBOUNCE_TIME = 100;
-    var w, h, cw, ch, canvas, ctx, createCanvas, resizeCanvas, setGlobals, globalTime = 0, resizeCount = 0;
-    createCanvas = function () {
-        var c, cs;
-        cs = (c = document.createElement("canvas")).style;
-        cs.position = "absolute";
-        cs.top = cs.left = "0px";
-        cs.zIndex = 1000;
-        document.body.appendChild(c);
-        return c;
-
-    }
-    resizeCanvas = function () {
-        if (canvas === undefined) {
-            canvas = createCanvas();
-
-        }
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        ctx = canvas.getContext("2d");
-        if (typeof setGlobals === "function") {
-            setGlobals();
-        }
-        if (typeof onResize === "function") {
-            resizeCount += 1;
-            setTimeout(debounceResize, RESIZE_DEBOUNCE_TIME);
-
-        }
-    }
-
-    function debounceResize() {
-        resizeCount -= 1;
-        if (resizeCount <= 0) {
-            onResize();
-        }
-    }
-
-    setGlobals = function () {
-        cw = (w = canvas.width) / 2;
-        ch = (h = canvas.height) / 2;
-    }
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+  function update(timer) { // Main update loop
+    globalTime = timer;
+    display();  // call demo code
     requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+
+  function change(image) {
+    if (step <= 0) {
+      step = 60;
+      imageReplace = image;
+      r = 1;
+    }
+  }
+
+
+  document.addEventListener('mousedown', function () {
+    change(imageNow === imageRed ? imageGreen : imageRed)
+  }, false);
 </script>
 </body>
 </html>
