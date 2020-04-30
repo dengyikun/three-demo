@@ -59,6 +59,8 @@
   let r = 0
   let imageNow
   let imageReplace
+  const ua = navigator.userAgent.toLowerCase();
+  const isSafari = ua.indexOf("safari") !== -1 && ua.indexOf("chrome") === -1;
 
   function display() {  // put code in here
     canvasContext.setTransform(1, 0, 0, 1, 0, 0) // reset transform
@@ -88,8 +90,8 @@
         const y = Math.sin(i / picNum * Math.PI * 2 - x) * r * -25 // 波浪高度
         dy = 50 + y // 上部分波浪
         dh = showHeight - 2 * y // 上下波浪同步
-        sw = sw * (1 - i / picNum / 50 * r)
-        sh = sh * (1 - i / picNum / 100 * r)
+        sw = isSafari ? sw : sw * (1 - i / picNum / 50 * r)
+        sh = isSafari ? sh : sh * (1 - i / picNum / 100 * r)
         sx -= sw // 从左往右开始剪切
         dx -= dw // 从左往右开始绘制
         const image = i / picNum >= (60 - step) / 15 ? imageNow : imageReplace
